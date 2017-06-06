@@ -3,7 +3,7 @@ require(__DIR__ . '/URL.class.php');
 class Oauth
 {
 	const VERSION = "2.0";
-	const GET_AUTH_CODE_URL = "https://open.weixin.qq.com/connect/qrconnect";
+	const GET_AUTH_CODE_URL = "https://open.weixin.qq.com/connect/oauth2/authorize";
 	const GET_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
 	const GET_OPENID_URL = "https://api.weixin.qq.com/sns/oauth2/refresh_token";
 	const GET_USER_INFO_URL = "https://api.weixin.qq.com/sns/userinfo";
@@ -24,13 +24,14 @@ class Oauth
 	
 	public static function AuthorizeURL($WebsitePath, $AppID, $AppKey, $SendState)
 	{
-		// https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN
+		// https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
 		$RequestParameter = array(
-			'response_type' => 'code',
 			'appid' => $AppKey,
 			'redirect_uri' => $WebsitePath . '/oauth-' . $AppID,
+			'response_type' => 'code',
 			'state' => $SendState,
-			'scope' => 'snsapi_login'
+			'scope' => 'snsapi_userinfo',
+			'WTFvar'=> '#wechat_redirect'
 		);
 		return self::GET_AUTH_CODE_URL . '?' . http_build_query($RequestParameter);
 	}
